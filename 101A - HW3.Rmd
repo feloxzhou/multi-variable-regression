@@ -1,0 +1,56 @@
+---
+title: "101A - HW3"
+output: pdf_document
+---
+
+```{r}
+library(car)
+library(plyr)
+```
+
+```{r}
+birth <- read.csv("Births5000.csv")
+bmean <- aggregate(birth$Birth.weight.g, list(birth$Mother.Minority),mean)
+bmean
+
+bvar <- aggregate(birth$Birth.weight.g, list(birth$Mother.Minority),var)
+bvar
+
+model <- lm(birth$Birth.Weight..g.~birth$Mother.Minority)
+summary(model)
+
+
+#SLR - Slope = 208.3 Intercept = 3135.97 Standard Error = 598.1 t-statistic - 10.21 d.f = 4998 p-value = <2.2e-16
+
+ttest<- t.test(birth$Birth.Weight..g. ~ birth$Mother.Minority, alternative = "two.sided", var.equal = TRUE) 
+ttest
+
+#Two sided t-test - 
+
+plot(model)
+
+```
+
+
+
+
+```{r}
+glm <- lm(birth$Birth.Weight..g. ~ birth$Gest.Age)
+summary(glm)
+
+plot(glm)
+invglm <- invResPlot(glm)
+summary(invglm)
+
+iglm <- lm(invglm)
+
+```
+
+
+```{r}
+test <- read.csv("CBDtestNoY.csv")
+train <- read.csv("CBDtrain.csv")
+
+dim(test)
+dim(train)
+```

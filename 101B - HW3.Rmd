@@ -1,0 +1,96 @@
+---
+title: "101B - HW3"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+##(4.13)
+```{r}
+library(dplyr)
+#dat = data.frame(rca = factor(rep(c(1:4),each=12)),
+#tp = factor(rep(c(1,1,2,2,3,3,4,4,5,5,6,6),4)),
+#y = c(4.93,(0.05), 4.86,(0.04), 4.75,(0.05), 4.95,(0.06), 4.79,(0.03), 4.88,(0.05),
+#      4.85,(0.04), 4.91,(0.02), 4.79,(0.03), 4.85,(0.05), 4.75,(0.03), 4.85,(0.02),
+#     4.83,(0.09), 4.88,(0.13), 4.90,(0.11), 4.75,(0.15), 4.82,(0.08), 4.90,(0.12),
+#      4.89,(0.03), 4.77,(0.04), 4.94,(0.05), 4.86,(0.05), 4.79,(0.03), 4.76,(0.02)))
+
+data <- c(rep("1", 6), rep("2", 6), rep("3", 6), rep("4", 6))
+tp <- rep(rep(c(1,2,3,4,5,6),4))
+
+avg <- c(4.93, 4.86, 4.75, 4.95, 4.79, 4.88, 4.85, 4.91, 4.79, 4.85, 4.75, 4.85,
+                 4.83, 4.88, 4.90, 4.75, 4.82, 4.90, 4.89, 4.77, 4.94, 4.86, 4.79, 4.76)
+
+sd <- c(0.05, 0.04, 0.05, 0.06, 0.03, 0.05, 0.04, 0.02, 0.03, 0.05, 0.03, 0.02, 
+                 0.09, 0.13, 0.11, 0.15, 0.08, 0.12, 0.03, 0.04, 0.05, 0.05, 0.03, 0.02)
+
+d1 <- data.frame(data, tp, avg)
+d2 <- data.frame(data, tp, sd)
+d3 <- data.frame(d1,d2)
+
+mavg <- aov(avg ~ data + tp, data = d1)
+summary(mavg)
+
+#log transformation
+msd <- aov(log(sd) ~ data + tp, data = d2)
+summary(msd)
+
+TukeyHSD(msd)
+
+par(mfrow=c(1,2))
+plot(msd,1:2)
+
+#We would chose algorithm 2, since it minimizes pot noise, but the ratio control algorithm has little effect on average cell voltage.
+
+```
+##(4.3)
+```{r}
+latin <- function (n){
+  x <- matrix(LETTERS[1:n], n, n)
+  x <- t(x)
+  for (i in 2:n) x[i, ] <- x[i, c(i:n, 1:(i - 1))]
+  x <- x[sample(n), ]
+  x <- x[, sample(n)]
+return(x)
+}
+
+latin(4)
+
+
+
+```
+##(4.22)
+```{r}
+dat = data.frame(day=factor(rep(1:5,5)),
+bat = factor(rep(1:5,each = 5)),
+method = factor(c(1,2,4,3,5,
+                  3,5,1,4,2,
+                  2,1,3,5,4,
+                  4,3,5,2,1,
+                  5,4,2,1,3)),
+
+          y = c(8,7,1,7,3,
+                11,2,7,3,8,
+                4,9,10,1,5,
+                6,8,6,6,10,
+                4,2,3,8,8))
+
+boxplot(y~method,data=dat, xlab = 'method')
+boxplot(y~day,data=dat, xlab = 'day')
+boxplot(y~bat,data=dat, xlab = 'batch')
+
+
+
+res.aov = aov(y~day+bat+method,data=dat)
+summary(res.aov)
+
+TukeyHSD(res.aov)
+
+par(mfrow=c(1,2))
+plot(res.aov,1:2)
+
+
+
+#with the p-value greater than 0.05, we can conclude that the chemicals used have a do not have a significant effect on the reaction time. 
+
+```

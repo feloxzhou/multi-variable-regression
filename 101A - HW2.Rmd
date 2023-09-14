@@ -1,0 +1,97 @@
+---
+title: "STATS101A - HW2"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+air <- read.csv("airfareW22.csv")
+air
+
+#A) 50 rows x 4 columns
+dim(air)
+
+#C) The ordinary straight line regression model can be improved through a transformation by taking the square root of the variables, this reduces the variance of the data.
+
+
+```
+
+```{r}
+#Question 2
+
+diamond <- read.csv("DiamondsW22.csv")
+diamond
+
+###Part 1
+#A)
+dim(diamond)
+
+#B)
+diamondlm <- lm(Price ~ Size, data = diamond)
+summary(diamondlm)
+#Our R^2 value is 0.9756 and adjusted R^2 value being 0.9754, meaning 97.54% of the data points accurately represents the prediction of price through size of the diamond.
+
+#C)
+#Weakness of this data would be the extreme negative values, represented by the negative intercept, minimum, Q1, and median. 
+
+
+
+###Part 2
+#A)
+diamond$Size <- sqrt(diamond$Size)
+diamond$price <- sqrt(diamond$Price)
+
+lm2 <- lm(Price ~ Size, data = diamond)
+summary(lm2)
+
+#B)
+#lm2 is extremely similar to lm1. This transformation that occured in lm2 was square rooting the size and price values of the data set diamond. The variation and R^2 value changed slightly going from 0.9754 -> 0.9655. The only weakness of lm2, similarly is the extreme negative intercept, -2553.
+
+#C) Both models are fairly similar, but model 1 provides a more accurate and more reasonable simple linear regression model. With the R^2 value being higher, representing a higher correlation between the two variables, and the negative inetercept being more reasonable, I believe that model 1 portrays a stronger model. 
+```
+```{r}
+#Question 3
+library(ggplot2)
+cland <- read.csv("ClevelandW22.csv")
+clandlm <- lm(maxheartrate ~ age, data = cland)
+
+
+plot(cland$age, resid(clandlm))
+
+#B)
+anova(clandlm)
+#To calculate F value from R^2 we can use that we know R^2 is SSR/SST. We then divide our SSR/DF so 30328/1 and SSE/DF (SSE = SST-SSR) so 149939/398. This gives use MSR and MSE, we then can do MSE/MSR to get F value of 80.503
+
+#Our null hypothesis for ANOVA is testing H_0: Beta_0 = Beta_1 = 0
+
+#Based on our F table and ANOVA output, we will reject our null hypothesis. 
+#MSE and Se^2 = 376.7
+var(cland$maxheartrate)* (1-.1682)
+# So it's quite a good approximation, with 375.8043 being the output
+
+#C) 
+# R^2 Adjusted is .1662 compared to R^2 .1682 so quite a small difference
+
+#D)
+# We can clearly see assumption of normality is violatied, the residuals are far off the line on the QQ Plot. Some influential points are concerning, the scale location plot looks to be alright
+
+#E)
+lp <- hatvalues(clandlm)
+rs <- rstandard((clandlm))
+
+#F)
+#diagPlot(lp)
+#diagPlot(rs)
+```
+
+```{r}
+#A)
+#SS 2671; 159236 - MS 1335.5; 53078
+#B) Leverage points: Observation 2 - iii
+#C) Outlier Observation 1,3 - ii
+
+
+
+
+```
